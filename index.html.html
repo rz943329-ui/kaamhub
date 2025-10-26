@@ -1,0 +1,142 @@
+<!-- Save as index.html and open in browser -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>KaamHub — Earn & Hire</title>
+<style>
+  :root{--accent:#0b74de;--bg:#f6f8fb}
+  body{font-family:Inter,Segoe UI,Arial; margin:0; background:var(--bg); color:#111}
+  header{background:white;box-shadow:0 2px 6px rgba(20,30,50,.06);padding:18px 28px;display:flex;align-items:center;justify-content:space-between}
+  header h1{margin:0;font-size:20px;color:var(--accent)}
+  .cta{display:flex;gap:8px}
+  .btn{padding:10px 14px;border-radius:8px;border:0;cursor:pointer}
+  .btn.primary{background:var(--accent);color:#fff}
+  .btn.ghost{background:transparent;color:var(--accent);border:1px solid rgba(11,116,222,.12)}
+  .hero{padding:48px 28px;display:flex;gap:40px;align-items:center}
+  .hero-left{max-width:640px}
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-top:20px}
+  .card{background:#fff;padding:16px;border-radius:12px;box-shadow:0 6px 18px rgba(20,30,50,.04)}
+  .listings{padding:18px 28px;display:grid;grid-template-columns:1fr 320px;gap:18px}
+  .listing{background:#fff;padding:14px;border-radius:10px;display:flex;flex-direction:column;gap:8px}
+  footer{padding:20px 28px;color:#666;font-size:14px}
+  .small{font-size:13px;color:#666}
+  .badge{background:#eef6ff;color:var(--accent);padding:6px 8px;border-radius:999px;font-weight:600}
+  @media(max-width:880px){.hero{flex-direction:column}.listings{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>KaamHub</h1>
+  <div class="cta">
+    <button class="btn ghost" onclick="alert('Signup as Client — implement OAuth')">Sign up (Client)</button>
+    <button class="btn primary" onclick="alert('Signup as Worker — implement OAuth')">Sign up (Worker)</button>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-left">
+    <h2 style="margin:0 0 8px">Platform jahan log kaam karein — aur aap earn karein</h2>
+    <p class="small">Clients tasks post karenge, workers complete karenge. Platform commission, featured listings aur subscriptions se revenue.</p>
+
+    <div class="cards" style="margin-top:18px">
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div><strong>Graphic Design</strong><div class="small">Logo, social posts</div></div>
+          <div class="badge">₨ 5000+</div>
+        </div>
+      </div>
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div><strong>Content Writing</strong><div class="small">Articles, blog posts</div></div>
+          <div class="badge">₨ 1000+</div>
+        </div>
+      </div>
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div><strong>Data Entry</strong><div class="small">Small tasks</div></div>
+          <div class="badge">₨ 300+</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:18px">
+      <button class="btn primary" onclick="createListing()">Post a Job (Client)</button>
+      <button class="btn" style="margin-left:8px" onclick="browse()">Browse Gigs</button>
+    </div>
+  </div>
+
+  <div style="flex:1;max-width:420px">
+    <img src="https://via.placeholder.com/420x260?text=KaamHub+Preview" alt="preview" style="width:100%;border-radius:12px;box-shadow:0 8px 24px rgba(20,30,50,.06)">
+  </div>
+</section>
+
+<section class="listings">
+  <div>
+    <h3 style="margin:0 0 12px">Recent Gigs</h3>
+
+    <div class="listing">
+      <strong>Logo design for new startup</strong>
+      <div class="small">Budget: ₨ 4,000 — Delivery: 3 days</div>
+      <div style="margin-top:auto"><button class="btn primary" onclick="applyNow('Logo design')">Apply</button> <button class="btn" onclick="view('Logo design')">View</button></div>
+    </div>
+
+    <div class="listing" style="margin-top:10px">
+      <strong>SEO blog post — 800 words</strong>
+      <div class="small">Budget: ₨ 1,200 — Delivery: 48 hrs</div>
+      <div style="margin-top:auto"><button class="btn primary" onclick="applyNow('SEO blog')">Apply</button> <button class="btn" onclick="view('SEO blog')">View</button></div>
+    </div>
+
+    <div class="listing" style="margin-top:10px">
+      <strong>Data entry: 200 records</strong>
+      <div class="small">Budget: ₨ 500 — Delivery: 2 days</div>
+      <div style="margin-top:auto"><button class="btn primary" onclick="applyNow('Data entry')">Apply</button> <button class="btn" onclick="view('Data entry')">View</button></div>
+    </div>
+  </div>
+
+  <aside>
+    <div class="card" style="padding:12px">
+      <h4 style="margin:0 0 8px">How you (platform owner) earn</h4>
+      <ol style="margin:0;padding-left:18px">
+        <li>Commission per completed job (e.g. 15%)</li>
+        <li>Featured listing fee</li>
+        <li>Premium seller subscription</li>
+      </ol>
+      <div style="margin-top:12px"><button class="btn primary" onclick="showRevenueModel()">See Sample Revenue</button></div>
+    </div>
+
+    <div class="card" style="margin-top:12px">
+      <h4 style="margin:0 0 8px">Quick actions</h4>
+      <button class="btn" style="width:100%;margin-bottom:8px" onclick="alert('Implement chat')">Open Chat</button>
+      <button class="btn" style="width:100%" onclick="alert('Implement dashboard')">My Dashboard</button>
+    </div>
+  </aside>
+</section>
+
+<footer>
+  <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap">
+    <div>© KaamHub — Prototype</div>
+    <div class="small">Built as MVP • Payments: Stripe recommended • Host: Netlify/Vercel</div>
+  </div>
+</footer>
+
+<script>
+function createListing(){
+  const title = prompt('Job title (example: Logo design)');
+  if(!title) return;
+  alert('Listing created in prototype: '+title + '\n(Integrate backend to save real listings)');
+}
+function applyNow(name){
+  alert('Applied for: '+name + '\n(Integrate user accounts + proposal flow)');
+}
+function view(name){ alert('Viewing: '+name) }
+function browse(){ alert('Browse — in real product show filters and categories') }
+function showRevenueModel(){
+  alert('Example: If 1000 jobs/month with avg value ₨1000 and 15% commission → Platform revenue = ₨150,000/month');
+}
+</script>
+
+</body>
+</html>
