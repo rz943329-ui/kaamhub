@@ -1,109 +1,153 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>KaamHub — Freelance Work Marketplace</title>
-<style>
-  :root { --accent:#0052cc; --bg:#f7f9fc; --text-dark:#0d1b2a; --text-light:#5f6c7b; }
-  body { font-family:Inter,Segoe UI,Arial; margin:0; background:var(--bg); color:var(--text-dark);}
-  header {background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.05);padding:16px 32px;display:flex;justify-content:space-between;align-items:center}
-  header h1{margin:0;font-size:22px;color:var(--accent)}
-  nav a{margin-left:20px;color:var(--text-dark);text-decoration:none;font-weight:500}
-  .btn{padding:10px 16px;border-radius:8px;border:none;cursor:pointer;font-weight:500}
-  .btn.primary{background:var(--accent);color:#fff}
-  .btn.outline{background:transparent;border:1px solid var(--accent);color:var(--accent)}
-  .hero{padding:80px 28px;display:flex;flex-wrap:wrap;gap:40px;align-items:center;justify-content:space-between}
-  .hero-text{flex:1;min-width:280px}
-  .hero-text h2{font-size:36px;margin-bottom:8px}
-  .hero-text p{color:var(--text-light);max-width:520px}
-  footer{background:#fff;padding:20px;text-align:center;color:var(--text-light);font-size:14px;border-top:1px solid #eaeaea}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KaamHub – Work & Earn</title>
+  <script type="module">
+    // Import Firebase SDKs
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-analytics.js";
+    import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    // Your Firebase Configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyANGwaXZcZKN-lXdtfR_c5hxVCIPs5S3sA",
+      authDomain: "kaamhub-32d60.firebaseapp.com",
+      projectId: "kaamhub-32d60",
+      storageBucket: "kaamhub-32d60.firebasestorage.app",
+      messagingSenderId: "983099645277",
+      appId: "1:983099645277:web:8ebdb1d318dd603c741cb4",
+      measurementId: "G-FT0L7YT83Q"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+    const db = getFirestore(app);
+
+    // Submit Job
+    async function postJob() {
+      const title = document.getElementById("jobTitle").value;
+      const pay = parseFloat(document.getElementById("jobPay").value);
+
+      if (!title || !pay) {
+        alert("Please enter job title and pay amount.");
+        return;
+      }
+
+      const commission = pay * 0.15; // 15% platform fee
+      const workerEarnings = pay - commission;
+
+      await addDoc(collection(db, "jobs"), {
+        title,
+        pay,
+        commission,
+        workerEarnings,
+        createdAt: new Date()
+      });
+
+      alert(`✅ Job added!\nTitle: ${title}\nEarnings (you): $${commission.toFixed(2)}\nWorker: $${workerEarnings.toFixed(2)}`);
+    }
+
+    // Display Jobs
+    async function loadJobs() {
+      const querySnapshot = await getDocs(collection(db, "jobs"));
+      const list = document.getElementById("jobList");
+      list.innerHTML = "";
+      querySnapshot.forEach((doc) => {
+        const job = doc.data();
+        const li = document.createElement("li");
+        li.textContent = `${job.title} — Pay: $${job.pay} | Worker: $${job.workerEarnings} | You: $${job.commission}`;
+        list.appendChild(li);
+      });
+    }
+
+    window.postJob = postJob;
+    window.loadJobs = loadJobs;
+  </script>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f3f4f6;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    header {
+      background: #2563eb;
+      color: white;
+      width: 100%;
+      text-align: center;
+      padding: 1rem;
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+    main {
+      margin-top: 2rem;
+      background: white;
+      padding: 1.5rem;
+      border-radius: 1rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      width: 90%;
+      max-width: 600px;
+    }
+    input, button {
+      padding: 0.7rem;
+      margin: 0.3rem 0;
+      width: 100%;
+      border-radius: 0.5rem;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+    }
+    button {
+      background: #2563eb;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #1d4ed8;
+    }
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+    li {
+      background: #f9fafb;
+      margin: 0.3rem 0;
+      padding: 0.5rem;
+      border-radius: 0.5rem;
+    }
+  </style>
 </head>
 <body>
+  <header>💼 KaamHub</header>
+  <main>
+    <h2>Post a Job</h2>
+    <input id="jobTitle" type="text" placeholder="Job Title" />
+    <input id="jobPay" type="number" placeholder="Pay Amount (e.g. 100)" />
+    <button onclick="postJob()">Post Job</button>
 
-<header>
-  <h1>KaamHub</h1>
-  <nav>
-    <a href="#">Find Work</a>
-    <a href="#">Post Job</a>
-    <a href="#" onclick="showLogin()">Login</a>
-    <a href="#" onclick="showSignup()">Sign Up</a>
-  </nav>
-</header>
-
-<section class="hero">
-  <div class="hero-text">
-    <h2>Find the Right Talent. Get Work Done.</h2>
-    <p>KaamHub connects businesses and freelancers for real projects. Hire professionals, complete tasks, and grow together — with secure payments and trusted delivery.</p>
-    <button class="btn primary" onclick="browseJobs()">Browse Jobs</button>
-    <button class="btn outline" onclick="postJob()">Post a Job</button>
-  </div>
-  <img src="https://via.placeholder.com/460x300?text=Freelancers+at+Work" alt="preview" style="max-width:460px;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.06)">
-</section>
-
-<footer>
-  © 2025 KaamHub — Connecting Businesses & Freelancers
-</footer>
-
-<!-- Firebase SDK (v9+ Modular, Works on GitHub Pages) -->
-<script type="module">
-  // Import Firebase SDKs directly from CDN
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-analytics.js";
-
-  // 🔹 Your Firebase configuration
-  const firebaseConfig = {
-    apiKey: "AIzaSyANGwaXZcZKN-lXdtfR_c5hxVCIPs5S3sA",
-    authDomain: "kaamhub-32d60.firebaseapp.com",
-    projectId: "kaamhub-32d60",
-    storageBucket: "kaamhub-32d60.firebasestorage.app",
-    messagingSenderId: "983099645277",
-    appId: "1:983099645277:web:9189cc9adfb8aa03741cb4",
-    measurementId: "G-M0Y5RS74MD"
-  };
-
-  // 🔸 Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const analytics = getAnalytics(app);
-
-  // 🔸 Signup
-  window.showSignup = async function() {
-    const email = prompt("Enter Email:");
-    const password = prompt("Enter Password:");
-    try {
-      await createUserWithEmailAndPassword(auth, email, password);
-      alert("✅ Signup successful!");
-    } catch (error) {
-      alert("❌ " + error.message);
-    }
-  }
-
-  // 🔸 Login
-  window.showLogin = async function() {
-    const email = prompt("Enter Email:");
-    const password = prompt("Enter Password:");
-    try {
-      await signInWithEmailAndPassword(auth, email, password);
-      alert("✅ Login successful!");
-    } catch (error) {
-      alert("❌ " + error.message);
-    }
-  }
-
-  // Placeholder actions
-  window.browseJobs = () => alert("In real app: show job listings.");
-  window.postJob = () => alert("In real app: open job form.");
-</script>
-
+    <hr />
+    <h2>Available Jobs</h2>
+    <button onclick="loadJobs()">Refresh Jobs</button>
+    <ul id="jobList"></ul>
+  </main>
 </body>
 </html>
 
+ 
+ 
+    
+  
   
 
 
   
+
 
 
