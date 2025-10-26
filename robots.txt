@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://rz943329-ui.github.io/kaamhub/sitemap.xml
