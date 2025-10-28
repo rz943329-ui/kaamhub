@@ -17,33 +17,30 @@
 <meta name="twitter:description" content="Find freelance jobs, post work, and earn through KaamHub. Powered by Firebase." />
 <meta name="twitter:image" content="https://rz943329-ui.github.io/kaamhub/preview.png" />
 
- <meta name="google-site-verification" content="lkIGBB4SPsTaNKDnfKE_Qo0VhW_F-UoB63vewwK0G9o" />
+ <meta name="google-site-verification" content="uL3F84JozcG-1wGddpuiYXGgDX1SANSsZvdL3285PDA" /> 
+  <!-- SEO Keywords -->
+<meta name="keywords" content="freelance jobs Pakistan, KaamHub, online earning Pakistan, hire freelancers, freelance marketplace, Pakistani freelancers, remote work Pakistan, online jobs, KaamHub freelance platform, post jobs online">
 
-<!-- ✅ Schema Markup (JSON-LD) -->
+<!-- Schema Markup (JSON-LD) -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "Organization",
+  "@type": "WebSite",
   "name": "KaamHub",
-  "url": "https://kaamhub.wuaze.com/",
-  "logo": "https://rz943329-ui.github.io/kaamhub/A_promotional_digital_graphic_design_showcases_Kaa.png",
+  "url": "https://rz943329-ui.github.io/kaamhub/",
   "description": "KaamHub is Pakistan’s Freelance Marketplace — where clients post jobs and freelancers earn securely online.",
-  "founder": "KaamHub Team",
+  "publisher": {
+    "@type": "Organization",
+    "name": "KaamHub",
+    "logo": "https://rz943329-ui.github.io/kaamhub/A_promotional_digital_graphic_design_showcases_Kaa.png"
+  },
   "sameAs": [
     "https://facebook.com/kaamhub",
     "https://instagram.com/kaamhub",
     "https://twitter.com/kaamhub"
-  ],
-  "potentialAction": {
-    "@type": "SearchAction",
-    "target": "https://kaamhub.wuaze.com/?q={search_term_string}",
-    "query-input": "required name=search_term_string"
-  }
+  ]
 }
 </script>
-
-  <!-- SEO Keywords -->
-<meta name="keywords" content="freelance jobs Pakistan, KaamHub, online earning Pakistan, hire freelancers, freelance marketplace, Pakistani freelancers, remote work Pakistan, online jobs, KaamHub freelance platform, post jobs online">
 
   <title>KaamHub — Work & Earn</title>
   <style>
@@ -77,5 +74,337 @@
     @media(max-width:920px){.grid{grid-template-columns:1fr}}
   </style>
 </head>
+<body>
 
-  
+<header>
+  <h1>KaamHub</h1>
+  <div class="nav-actions">
+    <div id="userArea" class="small muted">Not signed in</div>
+    <button id="btnGoogle" class="btn ghost">Sign in with Google</button>
+    <button id="btnShowEmail" class="btn ghost">Email Sign In</button>
+    <button id="btnLogout" class="btn" style="display:none">Logout</button>
+  </div>
+</header>
+
+<main class="container">
+  <div class="grid">
+    <!-- LEFT: Post job + Jobs list -->
+    <div>
+      <div class="card">
+        <h2>Post a Job</h2>
+        <div class="small muted" style="margin-bottom:8px">You must be signed in to post a job.</div>
+        <label>Job title</label>
+        <input id="jobTitle" placeholder="e.g., Landing page design" />
+        <label style="margin-top:8px">Budget (PKR)</label>
+        <input id="jobBudget" type="number" placeholder="e.g., 5000" />
+        <label style="margin-top:8px">Description</label>
+        <textarea id="jobDesc" placeholder="Describe the task and deliverables"></textarea>
+        <div style="display:flex;gap:8px;margin-top:12px">
+          <button id="btnPost" class="btn primary">Post Job</button>
+          <button id="btnPreview" class="btn ghost">Preview</button>
+        </div>
+        <div id="postMsg" class="small muted" style="margin-top:10px"></div>
+      </div>
+
+      <div style="height:18px"></div>
+
+      <div class="card">
+        <h2>Available Jobs</h2>
+        <div class="small muted" style="margin-bottom:12px">Browse jobs posted by clients. Click Apply to send a quick application.</div>
+        <div id="jobsList" class="jobs-list"></div>
+        <div style="margin-top:8px"><button id="btnRefresh" class="btn ghost">Refresh Jobs</button></div>
+      </div>
+    </div>
+
+    <!-- RIGHT: Auth UI & Info -->
+    <aside>
+      <div class="card">
+        <h2>Account</h2>
+        <div class="muted small">Sign up or sign in to post jobs and apply.</div>
+
+        <div id="emailForms" style="margin-top:12px">
+          <label>Email</label>
+          <input id="emailInput" type="email" placeholder="you@example.com" />
+          <label style="margin-top:8px">Password</label>
+          <input id="passInput" type="password" placeholder="••••••••" />
+          <div style="display:flex;gap:8px;margin-top:12px">
+            <button id="btnSignup" class="btn primary">Sign up</button>
+            <button id="btnLogin" class="btn ghost">Sign in</button>
+          </div>
+        </div>
+
+        <div style="height:12px"></div>
+        <div id="authTips" class="small muted">You can use Google Sign-In or create an account with email & password.</div>
+      </div>
+
+      <div style="height:12px"></div>
+
+      <div class="card">
+        <h2>How platform earns</h2>
+        <ol style="margin:0 0 0 18px;padding:0;color:var(--muted)">
+          <li>15% commission from each job budget</li>
+          <li>Featured listings / subscriptions (future)</li>
+        </ol>
+        <div class="small muted" style="margin-top:8px">Commission is calculated automatically when posting a job.</div>
+      </div>
+    </aside>
+  </div>
+</main>
+
+<footer>
+  © 2025 KaamHub — Built with Firebase • Your data stored in Firestore
+</footer>
+
+<!-- Firebase modular SDK (v11+) -->
+<script type="module">
+  // Firebase imports
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+  import {
+    getAuth,
+    onAuthStateChanged,
+    createUserWithEmailAndPassword,
+    signInWithEmailAndPassword,
+    signOut,
+    GoogleAuthProvider,
+    signInWithPopup
+  } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+  import {
+    getFirestore,
+    collection,
+    addDoc,
+    getDocs,
+    serverTimestamp,
+    doc,
+    setDoc
+  } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+
+  // ---------- YOUR FIREBASE CONFIG (from your project) ----------
+  const firebaseConfig = {
+    apiKey: "AIzaSyANGwaXZcZKN-lXdtfR_c5hxVCIPs5S3sA",
+    authDomain: "kaamhub-32d60.firebaseapp.com",
+    projectId: "kaamhub-32d60",
+    storageBucket: "kaamhub-32d60.firebasestorage.app",
+    messagingSenderId: "983099645277",
+    appId: "1:983099645277:web:8ebdb1d318dd603c741cb4",
+    measurementId: "G-FT0L7YT83Q"
+  };
+  // ---------------------------------------------------------------
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  // UI elements
+  const userArea = document.getElementById("userArea");
+  const btnGoogle = document.getElementById("btnGoogle");
+  const btnShowEmail = document.getElementById("btnShowEmail");
+  const btnLogout = document.getElementById("btnLogout");
+  const btnSignup = document.getElementById("btnSignup");
+  const btnLogin = document.getElementById("btnLogin");
+  const emailInput = document.getElementById("emailInput");
+  const passInput = document.getElementById("passInput");
+  const btnPost = document.getElementById("btnPost");
+  const btnRefresh = document.getElementById("btnRefresh");
+  const jobsList = document.getElementById("jobsList");
+  const postMsg = document.getElementById("postMsg");
+  const btnPreview = document.getElementById("btnPreview");
+
+  // Google Sign-in
+  btnGoogle.addEventListener("click", async () => {
+    try {
+      const provider = new GoogleAuthProvider();
+      await signInWithPopup(auth, provider);
+      // onAuthStateChanged will handle UI update
+    } catch (err) {
+      alert("Google sign-in error: " + err.message);
+    }
+  });
+
+  // Toggle email form (show/hide)
+  btnShowEmail.addEventListener("click", () => {
+    const forms = document.getElementById("emailForms");
+    if (forms.style.display === "none" || !forms.style.display) forms.style.display = "block";
+    else forms.style.display = "block";
+  });
+
+  // Email signup
+  btnSignup.addEventListener("click", async () => {
+    const email = emailInput.value.trim();
+    const pass = passInput.value;
+    if (!email || !pass) return alert("Enter email and password.");
+    try {
+      await createUserWithEmailAndPassword(auth, email, pass);
+      alert("✅ Account created. You are signed in.");
+      emailInput.value = ""; passInput.value = "";
+    } catch (err) {
+      alert("Signup error: " + err.message);
+    }
+  });
+
+  // Email login
+  btnLogin.addEventListener("click", async () => {
+    const email = emailInput.value.trim();
+    const pass = passInput.value;
+    if (!email || !pass) return alert("Enter email and password.");
+    try {
+      await signInWithEmailAndPassword(auth, email, pass);
+      alert("✅ Signed in.");
+      emailInput.value = ""; passInput.value = "";
+    } catch (err) {
+      alert("Login error: " + err.message);
+    }
+  });
+
+  // Logout
+  btnLogout.addEventListener("click", async () => {
+    try {
+      await signOut(auth);
+      alert("Signed out.");
+    } catch (err) {
+      alert("Sign out error: " + err.message);
+    }
+  });
+
+  // Post Job
+  btnPost.addEventListener("click", async () => {
+    const user = auth.currentUser;
+    if (!user) return alert("Please sign in to post a job.");
+    const title = document.getElementById("jobTitle").value.trim();
+    const desc = document.getElementById("jobDesc").value.trim();
+    const budgetVal = document.getElementById("jobBudget").value;
+    const budget = parseFloat(budgetVal);
+    if (!title || !desc || !budget || isNaN(budget) || budget <= 0) return alert("Please complete all fields with valid budget.");
+    const commission = Math.round(budget * 0.15); // platform fee (rounded)
+    const workerEarnings = Math.round(budget - commission);
+    try {
+      const docRef = await addDoc(collection(db, "jobs"), {
+        title,
+        description: desc,
+        budget,
+        commission,
+        workerEarnings,
+        clientEmail: user.email,
+        createdAt: serverTimestamp()
+      });
+      postMsg.textContent = "Job posted successfully (ID: " + docRef.id + ")";
+      document.getElementById("jobTitle").value = "";
+      document.getElementById("jobDesc").value = "";
+      document.getElementById("jobBudget").value = "";
+      loadJobs();
+    } catch (err) {
+      alert("Error posting job: " + err.message);
+    }
+  });
+
+  // Preview (quick)
+  btnPreview.addEventListener("click", () => {
+    const title = document.getElementById("jobTitle").value || "(No title)";
+    const budget = document.getElementById("jobBudget").value || "0";
+    const desc = document.getElementById("jobDesc").value || "";
+    alert(`Preview\n\nTitle: ${title}\nBudget: PKR ${budget}\n\n${desc}`);
+  });
+
+  // Load jobs from Firestore
+  async function loadJobs() {
+    jobsList.innerHTML = "<div class='small muted'>Loading...</div>";
+    try {
+      const snapshot = await getDocs(collection(db, "jobs"));
+      jobsList.innerHTML = "";
+      if (snapshot.empty) {
+        jobsList.innerHTML = "<div class='small muted'>No jobs yet.</div>";
+        return;
+      }
+      snapshot.forEach(docSnap => {
+        const j = docSnap.data();
+        const id = docSnap.id;
+        const div = document.createElement("div");
+        div.className = "job-item";
+        div.innerHTML = `
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div>
+              <strong>${escapeHtml(j.title)}</strong>
+              <div class="small muted" style="margin-top:6px">${escapeHtml(j.description)}</div>
+              <div class="small muted" style="margin-top:6px">Posted by: <span class="user-badge">${escapeHtml(j.clientEmail || "unknown")}</span></div>
+            </div>
+            <div style="text-align:right">
+              <div class="small muted">Budget</div>
+              <div><strong>PKR ${j.budget}</strong></div>
+              <div class="small muted" style="margin-top:6px">You (platform): PKR ${j.commission}</div>
+              <div class="small muted">Worker: PKR ${j.workerEarnings}</div>
+            </div>
+          </div>
+          <div style="margin-top:10px;display:flex;gap:8px">
+            <button class="btn primary" onclick="applyForJob('${id}')">Apply</button>
+            <button class="btn ghost" onclick="viewJobDetails('${id}')">View</button>
+          </div>
+        `;
+        jobsList.appendChild(div);
+      });
+    } catch (err) {
+      jobsList.innerHTML = "<div class='small muted'>Error loading jobs: " + err.message + "</div>";
+    }
+  }
+
+  // Apply for job -> create application doc
+  window.applyForJob = async function(jobId) {
+    const user = auth.currentUser;
+    if (!user) return alert("Sign in to apply for jobs.");
+    const message = prompt("Send a short message to the client (one line):", "I can do this. Delivery in 2 days.");
+    try {
+      const appRef = await addDoc(collection(db, "applications"), {
+        jobId,
+        freelancerEmail: user.email,
+        message: message || "",
+        createdAt: serverTimestamp()
+      });
+      alert("Application sent! (ID: " + appRef.id + ")");
+    } catch (err) {
+      alert("Error sending application: " + err.message);
+    }
+  };
+
+  // View job details (simple)
+  window.viewJobDetails = function(id) {
+    alert("Open job details (job id: " + id + "). In full app show detail page and proposals.");
+  };
+
+  // Auth state observer
+  onAuthStateChanged(auth, user => {
+    if (user) {
+      userArea.innerHTML = `<span class="small muted">Signed in as</span> <span style="margin-left:8px" class="user-badge">${escapeHtml(user.email)}</span>`;
+      btnGoogle.style.display = "none";
+      btnShowEmail.style.display = "none";
+      btnLogout.style.display = "inline-block";
+    } else {
+      userArea.textContent = "Not signed in";
+      btnGoogle.style.display = "inline-block";
+      btnShowEmail.style.display = "inline-block";
+      btnLogout.style.display = "none";
+    }
+    // Always (re)load jobs for latest view
+    loadJobs();
+  });
+
+  btnRefresh.addEventListener("click", loadJobs);
+
+  // Small HTML-escape helper to avoid injecting user data unsafely
+  function escapeHtml(text){
+    if (!text && text !== 0) return "";
+    return String(text)
+      .replaceAll("&","&amp;")
+      .replaceAll("<","&lt;")
+      .replaceAll(">","&gt;")
+      .replaceAll('"',"&quot;")
+      .replaceAll("'","&#39;");
+  }
+
+  // End of module
+</script>
+
+</body>
+</html>
+
+     
+    
+
